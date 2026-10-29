@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8E9"/>
+      <stop offset="1" stop-color="#F1DFC0"/>
+    </linearGradient>
+    <linearGradient id="tea" x1="286" y1="168" x2="370" y2="339" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C98232"/>
+      <stop offset="1" stop-color="#8B481D"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="260" y1="105" x2="378" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF" stop-opacity=".76"/>
+      <stop offset="1" stop-color="#FFF" stop-opacity=".24"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" rx="24" fill="url(#background)"/>
+  <circle cx="488" cy="93" r="52" fill="#E8D0A8" opacity=".48"/>
+  <ellipse cx="320" cy="344" rx="130" ry="17" fill="#80562E" opacity=".14"/>
+  <path d="m337 113 62-53 11 9-54 70" stroke="#6D8B68" stroke-linecap="round" stroke-width="9"/>
+  <path d="m268 133 105 3-17 179c-2 17-15 29-31 29h-10c-16 0-29-12-31-28l-16-183Z" fill="url(#glass)" stroke="#FFF" stroke-width="8"/>
+  <path d="m277 175 88 2-13 139c-1 11-10 19-21 19h-9c-10 0-19-8-20-18l-25-142Z" fill="url(#tea)"/>
+  <path d="m283 204 25 4 14 29-17 18-17-16-5-35Zm51 30 18-11 13 12-5 24-19 9-10-15 3-19Z" fill="#FFF" fill-opacity=".72"/>
+  <path d="m289 191 6 120" stroke="#FFF" stroke-linecap="round" stroke-opacity=".66" stroke-width="8"/>
+  <path d="M253 336h133" stroke="#FFF" stroke-linecap="round" stroke-opacity=".68" stroke-width="8"/>
+  <path d="M203 324c-21-9-33-25-34-47" stroke="#7D9B6F" stroke-linecap="round" stroke-width="7"/>
+  <ellipse cx="163" cy="267" rx="10" ry="18" transform="rotate(-25 163 267)" fill="#8CA675"/>
+  <ellipse cx="180" cy="250" rx="10" ry="18" transform="rotate(32 180 250)" fill="#6F8F61"/>
+</svg>

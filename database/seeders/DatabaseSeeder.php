@@ -32,14 +32,24 @@ class DatabaseSeeder extends Seeder
             ['password' => Hash::make('kasir12345'), 'role' => 'kasir'],
         );
 
-        Menu::query()->firstOrCreate(
+        Menu::query()->updateOrCreate(
             ['nama_menu' => 'Nasi Goreng Spesial'],
-            ['harga' => 15000, 'kategori' => 'Makanan'],
+            ['harga' => 15000, 'kategori' => 'Makanan', 'foto' => 'images/menu/nasi-goreng.jpg'],
         );
 
-        Menu::query()->firstOrCreate(
+        Menu::query()->updateOrCreate(
+            ['nama_menu' => 'Mie Ayam'],
+            ['harga' => 12000, 'kategori' => 'Makanan', 'foto' => 'images/menu/mie-ayam.jpg'],
+        );
+
+        Menu::query()->updateOrCreate(
             ['nama_menu' => 'Es Teh Manis'],
-            ['harga' => 4000, 'kategori' => 'Minuman'],
+            ['harga' => 4000, 'kategori' => 'Minuman', 'foto' => 'images/menu/es-teh.jpg'],
+        );
+
+        Menu::query()->updateOrCreate(
+            ['nama_menu' => 'Cireng'],
+            ['harga' => 5000, 'kategori' => 'Makanan', 'foto' => 'images/menu/cireng.jpg'],
         );
     }
 }

@@ -27,6 +27,9 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 });
 
+Route::get('/logout', function () {
+    return redirect()->route('home')->with('warning', 'Gunakan tombol Keluar untuk mengakhiri sesi.');
+})->middleware('auth')->name('logout.notice');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function (): void {
@@ -39,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('student.')->group(function (): void {
     Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');
+    Route::get('/pembayaran', [StudentController::class, 'payment'])->name('payment');
     Route::post('/keranjang', [StudentController::class, 'addToCart'])->name('cart.add');
     Route::patch('/keranjang/{menu}', [StudentController::class, 'updateCart'])->name('cart.update');
     Route::delete('/keranjang/{menu}', [StudentController::class, 'removeFromCart'])->name('cart.remove');

@@ -34,8 +34,12 @@
         <div class="menu-grid">
             @foreach ($menus as $menu)
                 <article class="menu-card">
-                    <div class="menu-illustration {{ $loop->iteration % 3 === 0 ? 'illustration-green' : ($loop->iteration % 2 === 0 ? 'illustration-yellow' : '') }}">
-                        <span>{{ $menu->kategori === 'Minuman' ? '🥤' : '🍛' }}</span>
+                    <div class="menu-illustration">
+                        @if ($menu->foto)
+                            <img src="{{ str_starts_with($menu->foto, 'images/') ? asset($menu->foto) : asset('storage/'.$menu->foto) }}" alt="{{ $menu->nama_menu }}" loading="lazy">
+                        @else
+                            <span>{{ $menu->kategori === 'Minuman' ? '🥤' : '🍛' }}</span>
+                        @endif
                         <small>{{ $menu->kategori }}</small>
                     </div>
                     <div class="menu-info"><h3>{{ $menu->nama_menu }}</h3><span class="price">Rp{{ number_format($menu->harga, 0, ',', '.') }}</span></div>

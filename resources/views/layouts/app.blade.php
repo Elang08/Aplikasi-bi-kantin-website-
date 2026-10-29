@@ -11,10 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="role-{{ auth()->check() ? auth()->user()->role : 'guest' }}">
+    <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
     <header class="site-header">
         <a class="brand" href="{{ route('home') }}" aria-label="BI-Kantin beranda">
-            <span class="brand-mark">B</span>
+            <img class="brand-logo" src="{{ asset('images/logo-smk-bina-informatika.png') }}" alt="">
             <span>BI<span class="brand-accent">·</span>Kantin</span>
         </a>
         <nav class="nav-links" aria-label="Navigasi utama">
@@ -25,6 +26,7 @@
                     <a href="{{ route('cashier.dashboard') }}">Pembayaran</a>
                 @else
                     <a href="{{ route('student.dashboard') }}">Menu & pesanan</a>
+                    <a href="{{ route('student.payment') }}">Pembayaran</a>
                 @endif
                 <span class="user-chip">{{ auth()->user()->username }}</span>
                 <form action="{{ route('logout') }}" method="post">
@@ -38,7 +40,7 @@
         </nav>
     </header>
 
-    <main>
+    <main id="main-content">
         @if (session('success'))
             <div class="flash flash-success" role="status">{{ session('success') }}</div>
         @endif

@@ -36,7 +36,7 @@ class KantinWorkflowTest extends TestCase
         ])->assertRedirect();
 
         $this->post(route('student.checkout'))
-            ->assertRedirect(route('student.dashboard'));
+            ->assertRedirect(route('student.payment'));
 
         $this->assertDatabaseHas('pesanan', [
             'menu_id' => $menu->id,
@@ -44,6 +44,114 @@ class KantinWorkflowTest extends TestCase
             'total_harga' => 30000,
             'status' => 'Menunggu Konfirmasi',
         ]);
+    }
+
+    public function test_student_payment_page_only_shows_their_unpaid_orders_and_total(): void
+    {
+        $student = User::query()->create([
+            'username' => 'siswa_tagihan',
+            'password' => 'password',
+            'role' => 'siswa',
+        ]);
+        $otherStudent = User::query()->create([
+            'username' => 'siswa_lain',
+            'password' => 'password',
+            'role' => 'siswa',
+        ]);
+        $unpaidMenu = Menu::query()->create([
+            'nama_menu' => 'Mie Ayam Tagihan',
+            'harga' => 12000,
+            'kategori' => 'Makanan',
+        ]);
+        $paidMenu = Menu::query()->create([
+            'nama_menu' => 'Es Teh Lunas',
+            'harga' => 4000,
+            'kategori' => 'Minuman',
+        ]);
+        $otherMenu = Menu::query()->create([
+            'nama_menu' => 'Pesanan Siswa Lain',
+            'harga' => 8000,
+            'kategori' => 'Makanan',
+        ]);
+        Pesanan::query()->create([
+            'user_id' => $student->id,
+            'menu_id' => $unpaidMenu->id,
+            'jumlah' => 2,
+            'total_harga' => 24000,
+            'status' => 'Menunggu Konfirmasi',
+        ]);
+        Pesanan::query()->create([
+            'user_id' => $student->id,
+            'menu_id' => $paidMenu->id,
+            'jumlah' => 1,
+            'total_harga' => 4000,
+            'status' => 'Lunas',
+        ]);
+        Pesanan::query()->create([
+            'user_id' => $otherStudent->id,
+            'menu_id' => $otherMenu->id,
+            'jumlah' => 1,
+            'total_harga' => 8000,
+            'status' => 'Menunggu Konfirmasi',
+        ]);
+
+        $this->actingAs($student)
+            ->get(route('student.payment'))
+            ->assertOk()
+            ->assertSee('Mie Ayam Tagihan')
+            ->assertSee('Es Teh Lunas')
+            ->assertDontSee('Pesanan Siswa Lain')
+            ->assertSee('Rp24.000')
+            ->assertSee('images/qris-bikantin.png')
+            ->assertSee('Bayar dengan QRIS')
+            ->assertSee('Scan untuk membayar');
+    }
+
+    public function test_student_can_increase_cart_quantity_from_the_menu_and_cart(): void
+    {
+        $student = User::query()->create([
+            'username' => 'siswa_keranjang',
+            'password' => 'password',
+            'role' => 'siswa',
+        ]);
+        $menu = Menu::query()->create([
+            'nama_menu' => 'Mie Ayam',
+            'harga' => 12000,
+            'kategori' => 'Makanan',
+        ]);
+
+        $this->actingAs($student)
+            ->post(route('student.cart.add'), ['menu_id' => $menu->id, 'jumlah' => 1])
+            ->assertRedirect()
+            ->assertSessionHas('kantin_cart', [$menu->id => 1]);
+
+        $this->post(route('student.cart.add'), ['menu_id' => $menu->id, 'jumlah' => 1])
+            ->assertRedirect()
+            ->assertSessionHas('kantin_cart', [$menu->id => 2]);
+
+        $this->patch(route('student.cart.update', $menu), ['jumlah' => 3])
+            ->assertRedirect()
+            ->assertSessionHas('kantin_cart', [$menu->id => 3]);
+    }
+
+    public function test_logout_accepts_post_and_get_does_not_show_page_expired(): void
+    {
+        $student = User::query()->create([
+            'username' => 'siswa_logout',
+            'password' => 'password',
+            'role' => 'siswa',
+        ]);
+
+        $this->actingAs($student)
+            ->get(route('logout.notice'))
+            ->assertRedirect(route('home'))
+            ->assertSessionHas('warning');
+
+        $this->actingAs($student)
+            ->post(route('logout'))
+            ->assertRedirect(route('login'));
+
+        $this->assertGuest();
     }
 
     public function test_legacy_plaintext_password_is_upgraded_after_successful_login(): void

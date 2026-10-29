@@ -15,6 +15,7 @@ class Menu extends Model
         'nama_menu',
         'harga',
         'kategori',
+        'foto',
     ];
 
     public function pesanan(): HasMany

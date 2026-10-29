@@ -7,6 +7,7 @@ use App\Models\Pesanan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -31,20 +32,44 @@ class AdminController extends Controller
 
     public function storeMenu(Request $request): RedirectResponse
     {
-        Menu::query()->create($this->validateMenu($request));
+        $validated = $this->validateMenu($request);
+        $foto = $request->file('foto');
+
+        if ($foto) {
+            $validated['foto'] = $foto->store('menu-photos', 'public');
+        }
+
+        Menu::query()->create($validated);
 
         return back()->with('success', 'Menu berhasil ditambahkan.');
     }
 
     public function updateMenu(Request $request, Menu $menu): RedirectResponse
     {
-        $menu->update($this->validateMenu($request));
+        $validated = $this->validateMenu($request);
+        $foto = $request->file('foto');
+
+        if ($foto) {
+            $oldFoto = $menu->foto;
+            $validated['foto'] = $foto->store('menu-photos', 'public');
+            $menu->update($validated);
+
+            if ($oldFoto && str_starts_with($oldFoto, 'menu-photos/')) {
+                Storage::disk('public')->delete($oldFoto);
+            }
+        } else {
+            $menu->update($validated);
+        }
 
         return back()->with('success', 'Menu berhasil diperbarui.');
     }
 
     public function destroyMenu(Menu $menu): RedirectResponse
     {
+        if ($menu->foto && str_starts_with($menu->foto, 'menu-photos/')) {
+            Storage::disk('public')->delete($menu->foto);
+        }
+
         $menu->delete();
 
         return back()->with('success', 'Menu berhasil dihapus.');
@@ -67,6 +92,7 @@ class AdminController extends Controller
             'nama_menu' => ['required', 'string', 'min:2', 'max:100'],
             'harga' => ['required', 'integer', 'min:1', 'max:21691752'],
             'kategori' => ['required', 'string', 'min:2', 'max:50'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
     }
 

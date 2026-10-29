@@ -12,6 +12,10 @@ use Illuminate\View\View;
 
 class StudentController extends Controller
 {
+    private const UNPAID_STATUSES = ['Menunggu Konfirmasi', 'Sedang Dimasak'];
+
+    private const PAID_STATUSES = ['Lunas', 'Siap Diambil', 'Selesai'];
+
     public function index(Request $request): View
     {
         $menus = Menu::query()->orderBy('kategori')->orderBy('nama_menu')->get();
@@ -42,6 +46,30 @@ class StudentController extends Controller
             'cart' => $cart,
             'cartItems' => $cartItems,
             'orders' => $orders,
+        ]);
+    }
+
+    public function payment(Request $request): View
+    {
+        $orders = Pesanan::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('status', self::UNPAID_STATUSES)
+            ->with('menu')
+            ->orderByDesc('id')
+            ->get();
+
+        $paidOrders = Pesanan::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('status', self::PAID_STATUSES)
+            ->with('menu')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
+
+        return view('student.payment', [
+            'orders' => $orders,
+            'paidOrders' => $paidOrders,
+            'total' => $orders->sum('total_harga'),
         ]);
     }
 
@@ -122,7 +150,7 @@ class StudentController extends Controller
 
         $request->session()->forget('kantin_cart');
 
-        return redirect()->route('student.dashboard')->with('success', 'Pesanan berhasil dibuat dan menunggu konfirmasi.');
+        return redirect()->route('student.payment')->with('success', 'Pesanan berhasil dibuat. Silakan bayar tunai di kasir.');
     }
 
     private function cart(Request $request): array

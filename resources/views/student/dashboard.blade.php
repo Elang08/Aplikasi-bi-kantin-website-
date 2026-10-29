@@ -1,14 +1,13 @@
 @extends('layouts.app')
 
 @section('title', 'Menu kantin')
-@section('refresh')
-<meta http-equiv="refresh" content="20">
-@endsection
-
 @section('content')
 <section class="page-heading">
     <div><span class="eyebrow">HALO, {{ strtoupper(auth()->user()->username) }}</span><h1>Waktunya pilih yang enak.</h1><p>Pilih menu, masukkan ke keranjang, dan kami siapkan untukmu.</p></div>
-    <a class="button button-outline" href="#keranjang">Keranjang <span class="cart-count">{{ array_sum($cart) }}</span></a>
+    <div class="dashboard-actions">
+        <a class="button button-outline" href="{{ route('student.payment') }}">Pembayaran</a>
+        <a class="button button-outline cart-shortcut" href="#keranjang">Keranjang <span class="cart-count">{{ array_sum($cart) }}</span></a>
+    </div>
 </section>
 
 <section class="section-block compact-section">
@@ -19,17 +18,25 @@
         <div class="menu-grid">
             @foreach ($menus as $menu)
                 <article class="menu-card">
-                    <div class="menu-illustration {{ $loop->iteration % 3 === 0 ? 'illustration-green' : ($loop->iteration % 2 === 0 ? 'illustration-yellow' : '') }}">
-                        <span>{{ $menu->kategori === 'Minuman' ? '🥤' : '🍛' }}</span>
+                    <div class="menu-illustration">
+                        @if ($menu->foto)
+                            <img src="{{ str_starts_with($menu->foto, 'images/') ? asset($menu->foto) : asset('storage/'.$menu->foto) }}" alt="{{ $menu->nama_menu }}" loading="lazy">
+                        @else
+                            <span>{{ $menu->kategori === 'Minuman' ? '🥤' : '🍛' }}</span>
+                        @endif
                         <small>{{ $menu->kategori }}</small>
                     </div>
                     <div class="menu-info"><h3>{{ $menu->nama_menu }}</h3><span class="price">Rp{{ number_format($menu->harga, 0, ',', '.') }}</span></div>
-                    <form action="{{ route('student.cart.add') }}" method="post" class="add-form">
+                    <form action="{{ route('student.cart.add') }}" method="post" class="add-form" data-quantity-form>
                         @csrf
                         <input type="hidden" name="menu_id" value="{{ $menu->id }}">
-                        <label class="sr-only" for="jumlah-{{ $menu->id }}">Jumlah {{ $menu->nama_menu }}</label>
-                        <input id="jumlah-{{ $menu->id }}" class="quantity-input" type="number" name="jumlah" value="1" min="1" max="99">
-                        <button class="button button-primary" type="submit">Tambah <span aria-hidden="true">+</span></button>
+                        <div class="quantity-stepper">
+                            <button type="button" data-step="-1" aria-label="Kurangi jumlah {{ $menu->nama_menu }}">−</button>
+                            <label class="sr-only" for="jumlah-{{ $menu->id }}">Jumlah {{ $menu->nama_menu }}</label>
+                            <input id="jumlah-{{ $menu->id }}" type="number" name="jumlah" value="1" min="1" max="99" inputmode="numeric">
+                            <button type="button" data-step="1" aria-label="Tambah jumlah {{ $menu->nama_menu }}">+</button>
+                        </div>
+                        <button class="button button-primary" type="submit">Tambah</button>
                     </form>
                 </article>
             @endforeach
@@ -50,10 +57,14 @@
                     @php($cartTotal += $menu->harga * $quantity)
                     <div class="cart-row">
                         <div><strong>{{ $menu->nama_menu }}</strong><small>Rp{{ number_format($menu->harga, 0, ',', '.') }} / item</small></div>
-                        <form action="{{ route('student.cart.update', $menu) }}" method="post" class="quantity-form">
+                        <form action="{{ route('student.cart.update', $menu) }}" method="post" class="quantity-form" data-quantity-form>
                             @csrf @method('PATCH')
-                            <input aria-label="Jumlah {{ $menu->nama_menu }}" type="number" name="jumlah" value="{{ $quantity }}" min="1" max="99">
-                            <button class="text-button" type="submit">Ubah</button>
+                            <div class="quantity-stepper compact-stepper">
+                                <button type="button" data-step="-1" aria-label="Kurangi jumlah {{ $menu->nama_menu }}">−</button>
+                                <input aria-label="Jumlah {{ $menu->nama_menu }}" type="number" name="jumlah" value="{{ $quantity }}" min="1" max="99" inputmode="numeric">
+                                <button type="button" data-step="1" aria-label="Tambah jumlah {{ $menu->nama_menu }}">+</button>
+                            </div>
+                            <button class="text-button" type="submit">Simpan</button>
                         </form>
                         <form action="{{ route('student.cart.remove', $menu) }}" method="post">
                             @csrf @method('DELETE')
