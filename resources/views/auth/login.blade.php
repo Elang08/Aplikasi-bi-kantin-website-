@@ -6,9 +6,9 @@
 <section class="auth-wrap">
     <div class="auth-aside">
         <span class="eyebrow">SELAMAT DATANG KEMBALI</span>
-        <h1>Jajan favoritmu, tinggal beberapa klik.</h1>
-        <p>Masuk untuk pesan menu kantin dan pantau pesananmu sampai siap diambil.</p>
-        <div class="aside-note"><span class="note-icon">✳</span><span>Praktis buat istirahat yang lebih santai.</span></div>
+        <h1>Masuk ke BI-Kantin</h1>
+        <p>Lihat menu, buat pesanan, dan periksa statusnya di sini.</p>
+        <div class="aside-note"><span class="note-icon">B</span><span>Kantin SMK Bina Informatika</span></div>
     </div>
     <form class="auth-card" action="{{ route('login.store') }}" method="post">
         @csrf

@@ -5,28 +5,31 @@
 @section('content')
 <section class="hero">
     <div class="hero-copy">
-        <span class="eyebrow"><span class="live-dot"></span> KANTIN SEKOLAH, CARA BARU</span>
-        <h1>Istirahat enak.<br><span>Antre nggak perlu.</span></h1>
-        <p>Pilih menu kesukaanmu, pesan dari mana saja, lalu ambil saat sudah siap. Waktu istirahat jadi milikmu lagi.</p>
+        <span class="eyebrow">KANTIN SMK BINA INFORMATIKA</span>
+        <h1>Pesan makan<br><span>jadi lebih mudah.</span></h1>
+        <p>Lihat menu kantin, pilih jumlahnya, lalu pantau pesananmu dari satu tempat.</p>
         <div class="hero-actions">
             <a class="button button-primary" href="{{ route('register') }}">Mulai pesan <span aria-hidden="true">→</span></a>
             <a class="text-link" href="{{ route('login') }}">Saya sudah punya akun</a>
         </div>
-        <div class="hero-proof"><span class="proof-avatars">B <b>✓</b></span><span><strong>Pesan dengan mudah</strong><br>dan pantau statusnya langsung</span></div>
+        <div class="hero-proof"><span><strong>Menu · Pesanan · Pembayaran</strong><br>Semua bisa dicek dari dashboard siswa.</span></div>
     </div>
-    <div class="hero-art" aria-hidden="true">
-        <div class="art-sun"></div>
-        <div class="art-card art-card-back"><span>MENU HARI INI</span><b>Fresh & favorit</b><i>✦</i></div>
-        <div class="food-bowl"><div class="bowl-rice"></div><div class="food-leaf leaf-one"></div><div class="food-leaf leaf-two"></div><div class="food-egg"></div><div class="food-chili"></div></div>
-        <div class="art-card art-card-front"><span class="mini-check">✓</span><span><b>Pesanan siap!</b><small>Selamat menikmati</small></span></div>
-        <span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span>
+    <div class="hero-menu-photos" aria-label="Contoh menu kantin">
+        <figure class="hero-menu-featured">
+            <img src="{{ asset('images/menu/mie-ayam.jpg') }}" alt="Mie Ayam">
+            <figcaption>Mie Ayam</figcaption>
+        </figure>
+        <figure class="hero-menu-secondary">
+            <img src="{{ asset('images/menu/nasi-goreng.jpg') }}" alt="Nasi Goreng Spesial">
+            <figcaption>Nasi Goreng Spesial</figcaption>
+        </figure>
     </div>
 </section>
 
 <section class="section-block">
     <div class="section-heading">
-        <div><span class="eyebrow">PILIHAN KANTIN</span><h2>Menu yang bikin semangat</h2></div>
-        <p>Intip menu hari ini dan temukan favoritmu.</p>
+        <div><span class="eyebrow">MENU KANTIN</span><h2>Pilihan menu</h2></div>
+        <p>Menu dan harga yang tersedia saat ini.</p>
     </div>
     @if ($menus->isEmpty())
         <div class="empty-state"><span class="empty-icon">☕</span><h3>Menu segera hadir</h3><p>Menu kantin akan tampil di sini setelah admin menambahkannya.</p></div>
@@ -51,8 +54,8 @@
 </section>
 
 <section class="steps-block">
-    <span class="eyebrow">GAMPANG BANGET</span>
-    <h2>Dari pilih menu sampai siap diambil</h2>
+    <span class="eyebrow">CARA PESAN</span>
+    <h2>Tiga langkah memesan</h2>
     <div class="steps-grid">
         <article><span class="step-number">01</span><h3>Pilih favoritmu</h3><p>Lihat menu makanan dan minuman yang tersedia di kantin.</p></article>
         <article><span class="step-number">02</span><h3>Checkout pesanan</h3><p>Masukkan menu ke keranjang dan konfirmasi pesananmu.</p></article>
